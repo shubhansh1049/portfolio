@@ -15,20 +15,23 @@ function Home() {
 
   // Fetch Projects
   useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const res = await axios.get(
-          "https://adminportfolio-6swc.onrender.com/project"
-        );
+  const fetchProjects = async () => {
+    try {
+      const res = await axios.get(
+        "https://adminportfolio-6swc.onrender.com/project"
+      );
 
-        setProjects(res.data);
-      } catch (err) {
-        console.log("Project Fetch Error:", err);
-      }
-    };
+      console.log(res.data);
 
-    fetchProjects();
-  }, []);
+      setProjects(res.data?.Projects || []);
+    } catch (err) {
+      console.log("Project Fetch Error:", err);
+      setProjects([]);
+    }
+  };
+
+  fetchProjects();
+}, []);
 
   // Contact Form Submit
   const handleSubmit = async (e) => {
@@ -169,88 +172,46 @@ function Home() {
 
       {/* Projects */}
       <section id="project" className="project-section">
-        <h1>Projects</h1>
+  <h1>Projects</h1>
 
-        {projects.length > 0 ? (
-          projects.map((project) => (
-            <div
-              key={project._id}
-              className="pro-card"
-              style={{ marginBottom: "20px" }}
-            >
-              {project.image && (
-                <img
-                  src={project.image}
-                  alt={project.title}
-                  style={{
-                    width: "100%",
-                    maxWidth: "400px",
-                    borderRadius: "10px",
-                    marginBottom: "10px",
-                  }}
-                />
-              )}
+  {projects.length > 0 ? (
+    projects.map((project) => (
+      <div
+        key={project._id}
+        className="pro-card"
+        style={{
+          marginBottom: "20px",
+          padding: "20px",
+        }}
+      >
+        <h2>{project.title}</h2>
 
-              <h2>{project.title}</h2>
+        <p>{project.description}</p>
 
-              <p>{project.description}</p>
-            </div>
-          ))
-        ) : (
-          <p>No Projects Found</p>
-        )}
-      </section>
+        <div style={{ marginTop: "10px" }}>
+          <a
+            href={project.github}
+            target="_blank"
+            rel="noreferrer"
+            style={{ marginRight: "15px" }}
+          >
+            GitHub
+          </a>
 
-      {/* Experience */}
-      <section id="experience" className="project-section">
-        <h1>Experience</h1>
-
-        <div className="pro-card">
-          Fresher - Currently building projects in MERN Stack and Android
-          Development.
+          <a
+            href={project.live}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Live Demo
+          </a>
         </div>
-      </section>
-
-      {/* Contact */}
-      <section id="contact" className="contact-section">
-        <h1>Contact Me</h1>
-
-        <p className="contact-text">
-          Feel free to reach out for collaborations, project discussions, or
-          opportunities.
-        </p>
-
-        <form className="contact-form" onSubmit={handleSubmit}>
-          <input
-            type="text"
-            placeholder="Your Name"
-            value={formdata.name}
-            onChange={(e) =>
-              setFormdata({ ...formdata, name: e.target.value })
-            }
-          />
-
-          <input
-            type="email"
-            placeholder="Your Email"
-            value={formdata.email}
-            onChange={(e) =>
-              setFormdata({ ...formdata, email: e.target.value })
-            }
-          />
-
-          <textarea
-            rows="6"
-            placeholder="Your Message"
-            value={formdata.message}
-            onChange={(e) =>
-              setFormdata({ ...formdata, message: e.target.value })
-            }
-          />
-
-          <button type="submit">Send Message</button>
-        </form>
-      </section>
+      </div>
+    ))
+  ) : (
+    <p>Loading Projects...</p>
+  )}
+</section>
 
       {/* Footer */}
       <footer className="footer">
