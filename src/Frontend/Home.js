@@ -1,38 +1,58 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Student from "../assets/Student.jpeg";
 import "./Home.css";
 import "./contact.css";
 import axios from "axios";
 
 function Home() {
+  const [projects, setProjects] = useState([]);
 
-  const [formdata,setFormdata]=useState({
-name:"",
-email:"",
-message:"",
+  const [formdata, setFormdata] = useState({
+    name: "",
+    email: "",
+    message: "",
   });
 
-  const handleSubmit= async(e)=>{
+  // Fetch Projects
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const res = await axios.get(
+          "https://adminportfolio-6swc.onrender.com/project"
+        );
+
+        setProjects(res.data);
+      } catch (err) {
+        console.log("Project Fetch Error:", err);
+      }
+    };
+
+    fetchProjects();
+  }, []);
+
+  // Contact Form Submit
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    try{
-  const response=await axios.post(
-     "https://portfolio-pzgj.onrender.com/api/contact",
-    formdata
-  );
 
-  alert (response.data.message);
+    try {
+      const response = await axios.post(
+        "https://portfolio-pzgj.onrender.com/api/contact",
+        formdata
+      );
 
-  setFormdata({
-    name:"",
-    email:"",
-    message:"",
-  });
-    }
-    catch(err){
+      alert(response.data.message);
+
+      setFormdata({
+        name: "",
+        email: "",
+        message: "",
+      });
+    } catch (err) {
       console.log(err);
-      alert("Failed To Send DAta");
+      alert("Failed To Send Data");
     }
-  }
+  };
+
   return (
     <div>
       {/* Navbar */}
@@ -151,8 +171,34 @@ message:"",
       <section id="project" className="project-section">
         <h1>Projects</h1>
 
-        <div className="pro-card">E-Commerce Website</div>
-        <div className="pro-card">Blog Website</div>
+        {projects.length > 0 ? (
+          projects.map((project) => (
+            <div
+              key={project._id}
+              className="pro-card"
+              style={{ marginBottom: "20px" }}
+            >
+              {project.image && (
+                <img
+                  src={project.image}
+                  alt={project.title}
+                  style={{
+                    width: "100%",
+                    maxWidth: "400px",
+                    borderRadius: "10px",
+                    marginBottom: "10px",
+                  }}
+                />
+              )}
+
+              <h2>{project.title}</h2>
+
+              <p>{project.description}</p>
+            </div>
+          ))
+        ) : (
+          <p>No Projects Found</p>
+        )}
       </section>
 
       {/* Experience */}
@@ -176,31 +222,31 @@ message:"",
 
         <form className="contact-form" onSubmit={handleSubmit}>
           <input
-  type="text"
-  placeholder="Your Name"
-  value={formdata.name}
-  onChange={(e) =>
-    setFormdata({ ...formdata, name: e.target.value })
-  }
-/>
+            type="text"
+            placeholder="Your Name"
+            value={formdata.name}
+            onChange={(e) =>
+              setFormdata({ ...formdata, name: e.target.value })
+            }
+          />
 
           <input
-  type="email"
-  placeholder="Your Email"
-  value={formdata.email}
-  onChange={(e) =>
-    setFormdata({ ...formdata, email: e.target.value })
-  }
-/>
+            type="email"
+            placeholder="Your Email"
+            value={formdata.email}
+            onChange={(e) =>
+              setFormdata({ ...formdata, email: e.target.value })
+            }
+          />
 
-         <textarea
-  rows="6"
-  placeholder="Your Message"
-  value={formdata.message}
-  onChange={(e) =>
-    setFormdata({ ...formdata, message: e.target.value })
-  }
-/>
+          <textarea
+            rows="6"
+            placeholder="Your Message"
+            value={formdata.message}
+            onChange={(e) =>
+              setFormdata({ ...formdata, message: e.target.value })
+            }
+          />
 
           <button type="submit">Send Message</button>
         </form>
