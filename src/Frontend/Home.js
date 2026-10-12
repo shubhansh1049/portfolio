@@ -278,7 +278,7 @@ function Home() {
       <header className="nav">
         <div className="nav-inner">
           <a href="#about" className="logo" aria-label="Shubhansh Dubey, home">
-            SD<span>.</span>
+            SHUBHANSH DUBEY<span>.</span>
           </a>
 
           <div id="nav-panel" className={`nav-panel ${menuOpen ? "open" : ""}`}>
